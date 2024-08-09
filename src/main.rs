@@ -2,7 +2,7 @@ use std::net::{TcpListener, TcpStream};
 use bottymc::ThreadPool;
 
 mod network;
-use network::client;
+use network::{client, datatypes::unsigned_byte};
 
 fn main() -> std::io::Result<()> {
     let listener = TcpListener::bind("127.0.0.1:25565")

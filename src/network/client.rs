@@ -1,10 +1,10 @@
-use std::{io::{BufReader, BufWriter}, net::TcpStream};
-use crate::network::datatypes::{varint, string, unsigned_short};
+use std::{io::{BufReader, BufWriter, Read}, net::TcpStream};
+use crate::network::{datatypes::{string, unsigned_byte, unsigned_short, varint}, io};
 
 enum ClientState {
-    Status,
-    Login,
-    Transfer
+    Status = 1,
+    Login = 2,
+    Transfer = 3
 }
 
 /*
@@ -29,6 +29,12 @@ pub fn spawn(stream: TcpStream) {
 
     // Length of packet
     let packet_length = varint::from_buffer(&mut state.reader);
+
+    // Special case for legacy ping packets
+    if packet_length & 0xFF == 0xFE {
+        println!("LEGACY PING");
+        return;
+    }
     println!("Length of incoming packet: {packet_length}");
 
     // Get the ID of this packet so we know how to proceed
@@ -48,6 +54,19 @@ pub fn spawn(stream: TcpStream) {
 
             let next_state = varint::from_buffer(&mut state.reader);
             println!("Next state: {next_state}");
+
+            match next_state {
+                next_state if next_state == ClientState::Status as i32 => {
+                    // We're just responding with status, no need to instantiate Client
+                },
+                next_state if next_state == ClientState::Login as i32 => {
+
+                },
+                next_state if next_state == ClientState::Transfer as i32 => {
+
+                },
+                _ => println!("Invalid next state: {next_state}. Dropping connection.")
+            }
         }
 
         _ => {
