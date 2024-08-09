@@ -2,7 +2,7 @@ use std::{io::BufReader, net::TcpStream};
 
 use crate::network::io;
 
-pub fn from_buffer(reader: &mut BufReader<&TcpStream>) -> u16 {
+pub fn from_buffer(reader: &mut BufReader<TcpStream>) -> u16 {
     let bytes = io::read_bytes(reader, 2);
 
     // Big endian from network

@@ -1,9 +1,9 @@
 use std::net::TcpStream;
-use std::io::{Read, BufReader};
+use std::io::BufReader;
 
 use crate::network::io;
 
-pub fn from_buffer(reader: &mut BufReader<&TcpStream>) -> i32 {
+pub fn from_buffer(reader: &mut BufReader<TcpStream>) -> i32 {
     // Get the size of the incoming packet from the first up to 5 bytes
     let mut position: u8 = 0;
     let mut value: i32 = 0;
